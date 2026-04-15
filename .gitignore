@@ -22,3 +22,7 @@ isaacsim-webrtc-streaming-client-1.1.5-linux-x64.AppImage
 
 *.pyc
 __pycache__/
+ 
+!data/forest_twin/.gitkeep
+ 
+!data/robotic_twin/.gitkeep
