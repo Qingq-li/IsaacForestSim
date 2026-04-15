@@ -2,7 +2,7 @@
 
 Turn segmented forest point clouds into a clean, navigable digital twin for Isaac Sim, with terrain, trunks, and more realistic pine canopy ready for playground experiments.
 
-![SAHA Harvester](doc/harvester/saha-harvester.png)
+![SAHA Harvester](doc/isaac_sim_demo.gif)
 
 SAHA harvester concept for future forest playground tasks, where the digital twin can be used as the scene layer for navigation, interaction, and machine simulation.
 
