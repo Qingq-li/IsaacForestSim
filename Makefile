@@ -1,4 +1,4 @@
-IMAGE_NAME=ros2-isaac-sim
+IMAGE_NAME=ros2-isaac-forest-sim
 VERSION=0.1
 CONTAINER_NAME=isaac-forest-sim-ros2-jazzy
 ROS_DOMAIN_ID=0
@@ -6,13 +6,16 @@ WEBRTC_STREAMING_CLIENT=isaacsim-webrtc-streaming-client-1.1.5-linux-x64.AppImag
 WEBRTC_STREAMING_CLIENT_URL=https://download.isaacsim.omniverse.nvidia.com/isaacsim-webrtc-streaming-client-1.1.4-linux-x64.AppImage
 XSOCK=/tmp/.X11-unix
 XAUTH=$(HOME)/.Xauthority
-FOREST_DEMO_OUTPUT=data/digital_twin/forest_demo.usda
-FOREST_DEMO_MANIFEST=data/digital_twin/forest_demo_manifest.json
-FOREST_DEMO_CACHE=data/digital_twin/forest_demo_cache.npz
-FOREST_DEMO_OUTPUT_DIR=data/digital_twin
+FOREST_DEMO_OUTPUT=data/forest_twin/forest_demo.usda
+FOREST_POINTCLOUD_PREVIEW=data/forest_twin/forest_pointcloud_preview.usda
+FOREST_DEMO_MANIFEST=data/forest_twin/forest_demo_manifest.json
+FOREST_DEMO_CACHE=data/forest_twin/forest_demo_cache.npz
+FOREST_DEMO_CAPTURE_DIR=data/forest_twin/captures
+FOREST_DEMO_OUTPUT_DIR=data/forest_twin
 FOREST_GENERATOR_SCRIPT=script/digitwin/forest_env_demo.py
+FOREST_CAPTURE_SCRIPT=script/digitwin/forest_capture_demo.py
 FOREST_POINTCLOUD_DIR=script/data/example_forest_pointcloud
-FOREST_CANOPY_ASSET_DIR=$(HOME)/isaac-sim/plan/canopy_assets
+FOREST_CANOPY_ASSET_DIR=script/digitwin/canopy_assets
 GROUND_POINTCLOUD=script/data/example_forest_pointcloud/porvoo-20250520-000013_ground_sec.ply
 
 build-isaac-sim-ros2-jazzy:
@@ -22,7 +25,7 @@ attach-running-container:
 	docker exec -it $(CONTAINER_NAME) bash -lc "export ROS_DOMAIN_ID=$(ROS_DOMAIN_ID) && source /opt/ros/jazzy/setup.bash && exec bash"
 
 
-run-sim-ros2-jazzy-container:
+run-forest-sim-ros2-jazzy-container:
 	echo "Running container $(CONTAINER_NAME)..."
 	xhost +si:localuser:root
 	@if docker container inspect $(CONTAINER_NAME) >/dev/null 2>&1; then \
@@ -54,7 +57,8 @@ run-sim-ros2-jazzy-container:
 			-v $$HOME/IsaacForestSim/isaac-sim/data:/isaac-sim/.local/share/ov/data:rw \
 			-v $$HOME/IsaacForestSim/isaac-sim/pkg:/isaac-sim/.local/share/ov/pkg:rw \
 			-v $$HOME/IsaacForestSim/isaac-sim/pkg:/isaac-sim/.local/share/ov/pkg:rw \
-			-v $$HOME/IsaacForestSim/data/digital_twin:/isaac-sim/.local/share/ov/digital_twin:rw \
+			-v $$HOME/IsaacForestSim/data/forest_twin:/isaac-sim/.local/share/ov/forest_twin:rw \
+			-v $$HOME/IsaacForestSim/data/robotic_twin:/isaac-sim/.local/share/ov/robotic_twin:rw \
 			$(IMAGE_NAME):$(VERSION) \
 			-lc "tail -f /dev/null"; \
 	fi; \
@@ -93,12 +97,29 @@ run-forest-usda-from-pointcloud:
 	CANOPY_ARG=""; \
 	if [ -d "$(FOREST_CANOPY_ASSET_DIR)" ] && [ -f "$(FOREST_CANOPY_ASSET_DIR)/pine_tree.usd" ]; then \
 		echo "Copying canopy assets from $(FOREST_CANOPY_ASSET_DIR)..."; \
-		docker cp "$(FOREST_CANOPY_ASSET_DIR)" $(CONTAINER_NAME):/tmp/canopy_assets; \
-		CANOPY_ARG="--canopy-prototype /tmp/canopy_assets/pine_tree.usd"; \
+		docker exec $(CONTAINER_NAME) bash -lc "mkdir -p /tmp/forest_digital_twin/assets"; \
+		docker cp "$(FOREST_CANOPY_ASSET_DIR)/pine_tree.usd" $(CONTAINER_NAME):/tmp/forest_digital_twin/assets/pine_tree.usd; \
+		CANOPY_ARG="--canopy-prototype /tmp/forest_digital_twin/assets/pine_tree.usd"; \
 	fi; \
 	echo "Generating $(FOREST_DEMO_OUTPUT_DIR)..."; \
-	docker exec $(CONTAINER_NAME) bash -lc "cd /isaac-sim/.local/share/ov/pkg && /isaac-sim/python.sh /tmp/forest_env_demo.py --source-dir /tmp/forest_pointcloud --ground porvoo-20250520-000013_ground_sec.ply --trunk porvoo-20250520-000013_trunk_sec.ply --canopy porvoo-20250520-000013_canopy_sec.ply --output-dir /tmp/forest_digital_twin --ground-resolution 0.5 --ground-padding 4.0 --ground-max-dim 2048 --ground-voxel-size 0.2 --ground-clip-low-q 1.0 --ground-clip-high-q 99.5 --ground-smoothing-sigma 0.5 --ground-thickness 0.5 --ground-collider-approximation sdf --add-canopy $$CANOPY_ARG"; \
+	docker exec $(CONTAINER_NAME) bash -lc "cd /isaac-sim/.local/share/ov/pkg && /isaac-sim/python.sh /tmp/forest_env_demo.py --source-dir /tmp/forest_pointcloud --ground porvoo-20250520-000013_ground_sec.ply --trunk porvoo-20250520-000013_trunk_sec.ply --canopy porvoo-20250520-000013_canopy_sec.ply --output-dir /tmp/forest_digital_twin --ground-resolution 0.5 --ground-padding 4.0 --ground-max-dim 2048 --ground-voxel-size 0.2 --ground-clip-low-q 1.0 --ground-clip-high-q 99.5 --ground-smoothing-sigma 0.5 --ground-thickness 0.5 --ground-collider-approximation sdf --trunk-height-max 18.0 --add-canopy $$CANOPY_ARG"; \
 	docker cp $(CONTAINER_NAME):/tmp/forest_digital_twin/. $(FOREST_DEMO_OUTPUT_DIR)/
+
+run-forest-demo-captures:
+	@set -e; \
+	if ! docker container inspect $(CONTAINER_NAME) >/dev/null 2>&1; then \
+		echo "Container $(CONTAINER_NAME) does not exist. Start it first with: make run-sim-ros2-jazzy-container"; \
+		exit 1; \
+	fi; \
+	if [ "$$(docker inspect -f '{{.State.Running}}' $(CONTAINER_NAME))" != "true" ]; then \
+		echo "Starting existing container $(CONTAINER_NAME)..."; \
+		docker start $(CONTAINER_NAME) >/dev/null; \
+	fi; \
+	mkdir -p $(FOREST_DEMO_CAPTURE_DIR); \
+	docker cp $(FOREST_CAPTURE_SCRIPT) $(CONTAINER_NAME):/tmp/forest_capture_demo.py; \
+	docker cp $(FOREST_DEMO_OUTPUT_DIR) $(CONTAINER_NAME):/tmp/forest_digital_twin; \
+	docker exec $(CONTAINER_NAME) bash -lc "cd /isaac-sim/.local/share/ov/pkg && /isaac-sim/python.sh /tmp/forest_capture_demo.py --manifest /tmp/forest_digital_twin/forest_demo_manifest.json --output-dir /tmp/forest_captures"; \
+	docker cp $(CONTAINER_NAME):/tmp/forest_captures/. $(FOREST_DEMO_CAPTURE_DIR)/
 
 run-forest-demo:
 	@if [ ! -f $(FOREST_DEMO_OUTPUT) ]; then \
