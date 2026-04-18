@@ -15,7 +15,6 @@ isaac-sim/documents/**
 isaac-sim/logs/**
 !isaac-sim/logs/.gitkeep
 
-isaac-sim/pkg/**
 !isaac-sim/pkg/.gitkeep
 
 isaacsim-webrtc-streaming-client-1.1.5-linux-x64.AppImage

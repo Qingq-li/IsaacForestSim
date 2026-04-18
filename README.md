@@ -77,3 +77,36 @@ python3 script/digitwin/forest_env_demo.py --output-dir data/forest_twin --add-c
 
 The generator will use the more realistic pine canopy asset from
 `/home/prefor/isaac-sim/plan/canopy_assets/pine_tree.usd` when it is available.
+
+
+
+RUN NAV2:
+```
+source /opt/ros/jazzy/setup.bash
+ros2 launch slam_toolbox online_async_launch.py \
+  slam_params_file:=/isaac-sim/.local/share/ov/pkg/nav2/slam_toolbox_params.yaml
+
+ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: -1.0}, angular: {z: 0.0}}"
+
+source /opt/ros/jazzy/setup.bash
+ros2 run nav2_map_server map_saver_cli -f /isaac-sim/.local/share/ov/pkg/nav2/simple_map
+
+source /opt/ros/jazzy/setup.bash
+
+ros2 launch nav2_bringup localization_launch.py \
+  map:=/isaac-sim/.local/share/ov/pkg/nav2/simple_map.yaml \
+  params_file:=/isaac-sim/.local/share/ov/pkg/nav2/nav2_params.yaml \
+  use_sim_time:=true \
+  use_composition:=False
+
+-- nav2  no collision monitor 
+ros2 launch /isaac-sim/.local/share/ov/pkg/nav2/navigation_no_collision.launch.py \
+  params_file:=/isaac-sim/.local/share/ov/pkg/nav2/nav2_params.yaml \
+  use_sim_time:=true \
+  use_composition:=False
+
+-- nav2 normal launch
+ros2 launch nav2_bringup navigation_launch.py   params_file:=/isaac-sim/.local/share/ov/pkg/nav2/nav2_params.yaml   use_sim_time:=true   use_composition:=False
+
+
+```

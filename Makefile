@@ -56,7 +56,6 @@ run-forest-sim-ros2-jazzy-container:
 			-v $$HOME/IsaacForestSim/isaac-sim/config:/isaac-sim/.nvidia-omniverse/config:rw \
 			-v $$HOME/IsaacForestSim/isaac-sim/data:/isaac-sim/.local/share/ov/data:rw \
 			-v $$HOME/IsaacForestSim/isaac-sim/pkg:/isaac-sim/.local/share/ov/pkg:rw \
-			-v $$HOME/IsaacForestSim/isaac-sim/pkg:/isaac-sim/.local/share/ov/pkg:rw \
 			-v $$HOME/IsaacForestSim/data/forest_twin:/isaac-sim/.local/share/ov/forest_twin:rw \
 			-v $$HOME/IsaacForestSim/data/robotic_twin:/isaac-sim/.local/share/ov/robotic_twin:rw \
 			$(IMAGE_NAME):$(VERSION) \
@@ -75,7 +74,7 @@ run-webrtc-streaming-client:
 	./$(WEBRTC_STREAMING_CLIENT)
 
 run-rviz:
-	docker exec -it $(CONTAINER_NAME) bash -lc "export ROS_DOMAIN_ID=$(ROS_DOMAIN_ID) && source /opt/ros/jazzy/setup.bash && rviz2"
+	docker exec -it $(CONTAINER_NAME) bash -lc "export ROS_DOMAIN_ID=$(ROS_DOMAIN_ID) && source /opt/ros/jazzy/setup.bash && rviz2 -d /isaac-sim/.local/share/ov/pkg/forest-saha-exp.rviz"
 
 run-teleop:
 	docker exec -it $(CONTAINER_NAME) bash -lc "export ROS_DOMAIN_ID=$(ROS_DOMAIN_ID) && source /opt/ros/jazzy/setup.bash && ros2 run teleop_twist_keyboard teleop_twist_keyboard"
