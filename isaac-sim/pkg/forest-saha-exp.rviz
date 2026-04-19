@@ -7,10 +7,10 @@ Panels:
         - /Global Options1
         - /Status1
         - /Path1/Topic1
-        - /Map1
         - /Map1/Update Topic1
+        - /TF1
       Splitter Ratio: 0.6400818228721619
-    Tree Height: 554
+    Tree Height: 404
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -237,10 +237,138 @@ Visualization Manager:
         Value: /global_costmap/costmap_updates
       Use Timestamp: false
       Value: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Filter (blacklist): ""
+      Filter (whitelist): ""
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        BASE:
+          Value: true
+        BASE_REAR:
+          Value: true
+        BOOM:
+          Value: true
+        BOOM_BASE:
+          Value: true
+        CLAMP_ARM_LL:
+          Value: true
+        CLAMP_ARM_LR:
+          Value: true
+        CLAMP_ARM_UL:
+          Value: true
+        CLAMP_ARM_UR:
+          Value: true
+        CUTTER_ARM:
+          Value: true
+        DIPPER:
+          Value: true
+        FEED_ROLLER_LEFT:
+          Value: true
+        FEED_ROLLER_RIGHT:
+          Value: true
+        GRIPPER_LEFT:
+          Value: true
+        GRIPPER_RIGHT:
+          Value: true
+        LF_LEG:
+          Value: true
+        LF_WHEEL:
+          Value: true
+        LH_LEG:
+          Value: true
+        LH_WHEEL:
+          Value: true
+        RF_LEG:
+          Value: true
+        RF_WHEEL:
+          Value: true
+        RH_LEG:
+          Value: true
+        RH_WHEEL:
+          Value: true
+        SAW_DISC:
+          Value: true
+        TELE:
+          Value: true
+        TIM781:
+          Value: true
+        TOOL_PITCH:
+          Value: true
+        TOOL_ROLL:
+          Value: true
+        TOOL_TILT:
+          Value: true
+        TOOL_YAW:
+          Value: true
+        XT32_SD10:
+          Value: true
+        ZED_X:
+          Value: true
+        odom:
+          Value: true
+        sensor_kit:
+          Value: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        odom:
+          BASE:
+            BASE_REAR:
+              LH_LEG:
+                LH_WHEEL:
+                  {}
+              RH_LEG:
+                RH_WHEEL:
+                  {}
+            BOOM_BASE:
+              BOOM:
+                DIPPER:
+                  TELE:
+                    TOOL_PITCH:
+                      TOOL_ROLL:
+                        TOOL_YAW:
+                          TOOL_TILT:
+                            CUTTER_ARM:
+                              SAW_DISC:
+                                {}
+                            GRIPPER_LEFT:
+                              CLAMP_ARM_LL:
+                                {}
+                              CLAMP_ARM_UL:
+                                {}
+                              FEED_ROLLER_LEFT:
+                                {}
+                            GRIPPER_RIGHT:
+                              CLAMP_ARM_LR:
+                                {}
+                              CLAMP_ARM_UR:
+                                {}
+                              FEED_ROLLER_RIGHT:
+                                {}
+            LF_LEG:
+              LF_WHEEL:
+                {}
+            RF_LEG:
+              RF_WHEEL:
+                {}
+            sensor_kit:
+              TIM781:
+                {}
+              XT32_SD10:
+                {}
+              ZED_X:
+                {}
+      Update Interval: 0
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: map
+    Fixed Frame: BASE
     Frame Rate: 30
   Name: root
   Tools:
@@ -283,25 +411,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 21.30091094970703
+      Distance: 3.557587146759033
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -1.3231594562530518
-        Y: -0.6326494216918945
-        Z: 2.8342037200927734
+        X: 0.6521015763282776
+        Y: 0.5049386620521545
+        Z: 1.1257250308990479
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.4703973531723022
+      Pitch: 0.025398239493370056
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.4453974962234497
+      Yaw: 0.030397679656744003
     Saved: ~
 Window Geometry:
   Displays:
@@ -311,7 +439,7 @@ Window Geometry:
   Hide Right Dock: true
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001eb00000364fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b000002ab000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006501000002ec000000b30000001600ffffff000000010000010f000002b4fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b000002b4000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000074a0000003efc0100000002fb0000000800540069006d006501000000000000074a0000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000005590000036400000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001eb00000364fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b00000215000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d0061006700650100000256000001490000001600ffffff000000010000010f000002b4fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b000002b4000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000074a0000003efc0100000002fb0000000800540069006d006501000000000000074a0000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000005590000036400000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -321,5 +449,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1866
-  X: 168
-  Y: 353
+  X: 454
+  Y: 205
